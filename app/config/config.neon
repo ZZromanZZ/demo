@@ -9,12 +9,17 @@ common:
         obo:
             developerMode: true
             tempDir: %tempDir%/obo
+            dataStorageMysqlTempDir: %tempDir%/oboDataStorageMysql
+            modelsDirs:
+                - %appDir%/models
 
     php:
         date.timezone: Europe/Prague
         session.save_path: "%tempDir%/sessions"
 
     nette:
+        container:
+            accessors: true
         application:
             errorPresenter: Error
 
@@ -36,9 +41,11 @@ common:
         obo:
             class: \obo\obo
             setup:
-                - setDefaultDataStorage(\obo\DataStorage\Dibi(@dibi.connection))
+                - setDefaultDataStorage(\obo\DataStorage\MySQL(@dibi.connection, \obo\DataStorage\Convertors\DefaultMysqlDataConverter(), \Cache(%obo.dataStorageMysqlTempDir%)))
                 - \obo\obo::$developerMode(%obo.developerMode%)
+                - addModelsDirs(%obo.modelsDirs%)
                 - setCache(\Cache(%obo.tempDir%))
+                - setTempDir(%obo.tempDir%)
 
 development < common:
     parameters:

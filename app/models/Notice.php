@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * This file is part of demo application for example of using framework Obo beta 2 version (http://www.obophp.org/)
  * Created under supervision of company as CreatApps (http://www.creatapps.cz/)
  * @link http://www.obophp.org/
@@ -15,12 +15,17 @@ namespace Notice;
 
 # definition of properties
 
-class NoticeProperties extends \Base\Properties{
-    public $id = null;
+class NoticeProperties extends \Base\EntityProperties{
+
+    /**
+     * @obo-autoIncrement
+     * @obo-dataType(integer)
+     */
+    public $id = 0;
     /** @obo-one(targetEntity = "\Users\User")*/
     public $user;
     public $text = "";
-    /** 
+    /**
      * @obo-timeStamp(beforeInsert)
      * @obo-dataType(dateTime)
      */
@@ -37,7 +42,7 @@ class NoticeProperties extends \Base\Properties{
  * @property string $dateTimeInserted
  */
 class Notice extends \Base\Entity{
-    
+
     /**
      * @param \Nette\Forms\Form $form
      * @return \Nette\Forms\Form
@@ -51,16 +56,16 @@ class Notice extends \Base\Entity{
 
 # definition entity manager
 
-class NoticeManager extends \Base\Manager{
-    
+class NoticeManager extends \Base\EntityManager{
+
     /**
      * @param null|int|array $specification
-     * @return \Notice\Notice 
+     * @return \Notice\Notice
      */
     public static function notice($specification) {
         return self::entity($specification);
     }
-    
+
     /**
      * @param \obo\Interfaces\IPaginator $paginator
      * @param \obo\Interfaces\IFilter $filter
@@ -77,11 +82,11 @@ class NoticeManager extends \Base\Manager{
     public static function newNoticeFromForm(\Nette\Forms\Form $form) {
         return self::newEntityFromForm(\Notice\Notice::constructForm($form));
     }
-    
+
     /**
      * @param \Nette\Forms\Form $form
      * @param Notice\Notice $notice
-     * @return \Nette\Forms\Form | \Notice\Notice 
+     * @return \Nette\Forms\Form | \Notice\Notice
      */
     public static function editNoticeFromForm(\Nette\Forms\Form $form, \Notice\Notice $notice = null) {
         return self::editEntityFromForm(\Notice\Notice::constructForm($form), $notice);

@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * This file is part of demo application for example of using framework Obo beta 2 version (http://www.obophp.org/)
  * Created under supervision of company as CreatApps (http://www.creatapps.cz/)
  * @link http://www.obophp.org/
@@ -14,18 +14,25 @@ namespace Users;
 # A class defining the entity is usually better to split into its own file. Here are clarity placed in one file
 
 # definition of properties
-class UserProperties extends \Base\Properties{
+class UserProperties extends \Base\EntityProperties{
+
+    /** @obo-persistable(false) */
     public $array = array();
+
+    /**
+     * @obo-autoIncrement
+     * @obo-dataType(integer)
+     */
     public $id = 0;
     public $name = "default name";
     public $surname = "default surname";
-    /** 
+    /**
      * @obo-one(targetEntity = "\Users\Sex")
      */
     public $sex = 1;
     /** @obo-many(targetEntity = "\Tag\Tag", connectViaRepository="RelationshipBetweenUserAndTag", sortVia = "{name}")*/
     public $tags = null;
-    /** 
+    /**
      * @obo-columnName(mail)
      */
     public $email = "";
@@ -33,31 +40,31 @@ class UserProperties extends \Base\Properties{
     /** @obo-many(targetEntity = "\Notice\Notice", connectViaProperty = "user", cascade = "save, delete")*/
     public $notices = null;
     /**
-     * @obo-dataType(number) 
+     * @obo-dataType(number)
      */
     public $countView = 0;
-    /** 
+    /**
      * @obo-dataType(boolean)
      */
     public $hide = false;
     /** @obo-dataType(dateTime) */
     public $dateTimeInserted = "";
-    /** 
+    /**
      * @obo-timeStamp(beforeUpdate)
      */
-    public $dateTimeUpdated = "";   
-    
+    public $dateTimeUpdated = "";
+
     /**
      * Implementation of the dynamic properties
-     * @return string 
+     * @return string
      */
     public function getNameSurname() {
         return "{$this->_owner->name} {$this->_owner->surname}";
     }
-    
+
     /**
-     * If it is defined getter or setter of the property so is used, else is called variable directly 
-     * @return string 
+     * If it is defined getter or setter of the property so is used, else is called variable directly
+     * @return string
      */
     public function getName() {
         # Here we can do anything
@@ -87,7 +94,7 @@ class User extends \Base\Entity{
 
     /**
      * @param \Nette\Forms\Form $form
-     * @return \Nette\Forms\Form 
+     * @return \Nette\Forms\Form
      */
     public static function constructForm(\Nette\Forms\Form $form) {
         $form->addHidden('id');
@@ -99,7 +106,7 @@ class User extends \Base\Entity{
         $form->addCheckbox('hide', 'Hide');
         return $form;
     }
-    
+
     /**
      * @obo-run("onViewInDetail")
      */
@@ -108,21 +115,21 @@ class User extends \Base\Entity{
         $this->countView++;
         $this->save();
     }
-        
+
 }
 
 # definition entity manager
 
-class UserManager extends \Base\Manager{
-        
+class UserManager extends \Base\EntityManager{
+
     /**
      * @param int|array|null $specification
-     * @return \Users\User  
+     * @return \Users\User
      */
     public static function user($specification) {
         return self::entity($specification);
     }
-    
+
     /**
      * @param iPaginator $paginatorComponet
      * @param iFilter $filterComponent
@@ -131,15 +138,15 @@ class UserManager extends \Base\Manager{
     public static function users(\obo\Interfaces\IPaginator $paginator = null, \obo\Interfaces\IFilter $filter = null) {
         return self::findEntities(\obo\Carriers\QueryCarrier::instance(), $paginator, $filter);
     }
-    
+
     /**
      * @param \Nette\Forms\Form $form
-     * @return \Nette\Forms\For|\Users\User 
+     * @return \Nette\Forms\For|\Users\User
      */
     public static function newUserFromForm(\Nette\Forms\Form $form) {
         return self::newEntityFromForm(\Users\User::constructForm($form));
     }
-    
+
     /**
      * @param \Nette\Forms\Form $form
      * @param \Users\User $user
@@ -148,5 +155,5 @@ class UserManager extends \Base\Manager{
     public static function editUserFromForm(\Nette\Forms\Form $form, \Users\User $user = null) {
         return self::editEntityFromForm(\Users\User::constructForm($form), $user);
     }
-        
+
 }
